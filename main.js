@@ -24,10 +24,10 @@ var request = require('superagent');
               .end((err,res)=>{
                 if(res){
                   console.log(res)
-                  for(i =0;i<res.body.results.length;i++){
-                    var x = res.body.results[i];
+                  for(i =0;i<res.body.length;i++){
+                    var x = res.body[i];
                     console.log("gi");
-                data.addRows([[x.lat,x.long,x.name]]);
+                data.addRows([[x.lat,x.long,x.shape]]);
                 }
                 map.draw(data, {
                     showTooltip: true,
