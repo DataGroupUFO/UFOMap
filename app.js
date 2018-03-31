@@ -8,10 +8,10 @@ app.use(cors());
 
 
 var connection = mysql.createConnection({
-  host: '127.0.0.1',
+  host: 'ufodataset.coctmoebpgxn.us-east-1.rds.amazonaws.com',
   database: 'ufomaps',
-  user: 'root',
-  password: 'pokemon12'
+  user: 'ufogroup',
+  password: 'ufogroup'
 });
 connection.connect();
 app.get('/', (req, res) => res.sendFile(path.join(__dirname+'/index.html')))
@@ -34,7 +34,7 @@ app.get('/addSearch',function(req,res){
   //Get lat long from string
   
   //Get all records in range from database
-  connection.query('SELECT * FROM sightings',(err,results,fields)=>{
+  connection.query('SELECT * FROM data',(err,results,fields)=>{
     if(err)
       return res.status(400).send({error:'Database error',message:err});
     res.status(200).send(results);
