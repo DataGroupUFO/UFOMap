@@ -25,16 +25,38 @@ app.get('/bundle.js', function(req, res) {
   Search Methods
 */
 
-//Search using both address and radius
+//Search for points near an address
 app.get('/addSearch',function(req,res){
   res.setHeader('Content-Type','application/json');
-  var lat;
-  var long;
+  var lat = req.query.lat;
+  var long = req.query.long;
+  console.log(lat);
+  console.log(long);
   
   //Get lat long from string
   
   //Get all records in range from database
-  connection.query('SELECT * FROM data',(err,results,fields)=>{
+  var euc = 'SQRT(POW('+lat+'-lat,2) + POW('+long+'-`long`,2))'
+  connection.query('SELECT * FROM data WHERE '+euc+' < 3 order by '+ euc ,(err,results,fields)=>{
+    if(err)
+      return res.status(400).send({error:'Database error',message:err});
+    res.status(200).send(results);
+  })
+  //return list of records in range
+  
+})
+//Testing serach
+app.get('/testSearch',function(req,res){
+  res.setHeader('Content-Type','application/json');
+  var lat = 38.897676;
+  var long = -77.036530;
+  
+  
+  //Get lat long from string
+  
+  //Get all records in range from database
+  var euc = 'SQRT(POW('+lat+'-lat,2) + POW('+long+'-`long`,2))'
+  connection.query('SELECT * FROM data WHERE '+euc+' < 3 order by '+ euc ,(err,results,fields)=>{
     if(err)
       return res.status(400).send({error:'Database error',message:err});
     res.status(200).send(results);
