@@ -10,8 +10,16 @@ var request = require('superagent');
       'mapsApiKey': 'AIzaSyD-9tSrke72PouQMnMX-a7eZSW0jkFMBWY'
     });
     google.charts.setOnLoadCallback(drawMapAdress);
-    $("#execute").click(drawMapAdress);
-    
+  
+
+    //Handles adding and searching for points
+    document.addEventListener("DOMContentLoaded",function(event){
+      document.getElementById("execute").addEventListener("click",function(){
+        console.log("Clicked");
+      });
+    });
+
+
     var request = require('superagent');
    
      function drawMapAdress(){
