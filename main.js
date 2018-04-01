@@ -10,7 +10,7 @@ var request = require('superagent');
       'mapsApiKey': 'AIzaSyD-9tSrke72PouQMnMX-a7eZSW0jkFMBWY'
     });
     google.charts.setOnLoadCallback(drawMapAdress);
-    
+    $("#execute").click(drawMapAdress);
     
     var request = require('superagent');
    
