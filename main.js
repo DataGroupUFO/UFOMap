@@ -7,7 +7,7 @@ var request = require('superagent');
       'packages': ['map'],
       // Note: you will need to get a mapsApiKey for your project.
       // See: https://developers.google.com/chart/interactive/docs/basic_load_libs#load-settings
-      'mapsApiKey': 'AIzaSyD-9tSrke72PouQMnMX-a7eZSW0jkFMBWY'
+      'mapsApiKey': 'AIzaSyDBU4eMBD02OnA8bu0iIn4HZFE__DEW3gE'
     });
     google.charts.setOnLoadCallback(drawMapAdress);
   
@@ -30,7 +30,7 @@ var request = require('superagent');
       
        var map = new google.visualization.Map(document.getElementById('map_div'));
        //Get lat long of address
-       request.get('https://maps.googleapis.com/maps/api/geocode/json?address='+addrs+'&key=AIzaSyD-9tSrke72PouQMnMX-a7eZSW0jkFMBWY')
+       request.get('https://maps.googleapis.com/maps/api/geocode/json?address='+addrs+'&key=AIzaSyDBU4eMBD02OnA8bu0iIn4HZFE__DEW3gE')
               .set('Accept','application/json')
               .end((err,res)=>{
                 if(res){
