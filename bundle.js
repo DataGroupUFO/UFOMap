@@ -62,9 +62,22 @@ var request = require('superagent');
         
           
                 data.addRows([[x.lat,x.long,x_string,"ufo"]]);
-                }
-                var url = 'https://icons.iconarchive.com/icons/icons-land/vista-map-markers/48/';
-                map.draw(data, {
+                
+            
+              
+              }
+              //Get airport points
+              request.get('/airport?lat='+lat+'&long='+long)
+              .set('Accept','application/json')
+              .end((err,res)=>{
+                if(res){
+                  for(i = 0; i<res.body.length;i++){
+                    var a = res.body[i];
+
+                    data.addRows([[a.Latitude,a.Longitude*(-1),a.locationID,'airport']]);
+                   
+                  }
+                  map.draw(data, {
                     showTooltip: true,
                     showInfoWindow: true,
                     icons: {
@@ -73,25 +86,23 @@ var request = require('superagent');
                       },
                       search: {
                         normal:   '/telescope.png'
+                      },
+                      airport:{
+                        normal:   '/airplane.png'
                       }
                     }
                   });
                 }
+
+              }
+            )
+               
+              
+                }
                 
                 console.log(data);
                 
-                map.draw(data, {
-                    showTooltip: true,
-                    showInfoWindow: true,
-                    icons: {
-                      ufo: {
-                        normal:   '/ufo.png'
-                      },
-                      search: {
-                        normal:   '/telescope.png'
-                      },
-                    }
-                  });
+            
                 });
                 };
               })

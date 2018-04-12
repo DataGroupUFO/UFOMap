@@ -27,6 +27,9 @@ app.get('/bundle.js', function(req, res) {
   app.get('/telescope.png', function(req, res) {
     res.sendFile(__dirname + "/" + "Telescope-icon.png");
   });
+  app.get('/airplane.png', function(req, res) {
+    res.sendFile(__dirname + "/" + "airplane.png");
+  });
 /*
   Search Methods
 */
@@ -51,7 +54,29 @@ app.get('/addSearch',function(req,res){
   //return list of records in range
   
 })
+//Search for points near an address
+app.get('/airport',function(req,res){
+  res.setHeader('Content-Type','application/json');
+  var lat = req.query.lat;
+  var long = req.query.long;
+  console.log(lat);
+  console.log(long);
+  
+  //Get lat long from string
+  
+  //Get all records in range from database
+  var euc = 'SQRT(POW('+lat+'-Latitude,2) + POW('+long+'-(`Longitude`*-1),2))'
+  connection.query('SELECT * FROM airports WHERE '+euc+' < 2 order by '+ euc ,(err,results,fields)=>{
+    if(err)
+      return res.status(400).send({error:'Database error',message:err});
+    res.status(200).send(results);
+  })
+  //return list of records in range
+  
+})
 //Testing serach
+
+
 app.get('/testSearch',function(req,res){
   res.setHeader('Content-Type','application/json');
   var lat = 38.897676;
