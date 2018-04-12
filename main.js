@@ -7,9 +7,9 @@ var request = require('superagent');
       'packages': ['map'],
       // Note: you will need to get a mapsApiKey for your project.
       // See: https://developers.google.com/chart/interactive/docs/basic_load_libs#load-settings
-      'mapsApiKey': 'AIzaSyD-9tSrke72PouQMnMX-a7eZSW0jkFMBWY'
+      'mapsApiKey': 'AIzaSyDBU4eMBD02OnA8bu0iIn4HZFE__DEW3gE'
     });
-    google.charts.setOnLoadCallback(drawMapAdress);
+    //google.charts.setOnLoadCallback(drawMapAdress);
   
 
     //Handles adding and searching for points
@@ -30,7 +30,7 @@ var request = require('superagent');
       
        var map = new google.visualization.Map(document.getElementById('map_div'));
        //Get lat long of address
-       request.get('https://maps.googleapis.com/maps/api/geocode/json?address='+addrs+'&key=AIzaSyD-9tSrke72PouQMnMX-a7eZSW0jkFMBWY')
+       request.get('https://maps.googleapis.com/maps/api/geocode/json?address='+addrs+'&key=AIzaSyDBU4eMBD02OnA8bu0iIn4HZFE__DEW3gE')
               .set('Accept','application/json')
               .end((err,res)=>{
                 if(res){
@@ -39,8 +39,8 @@ var request = require('superagent');
                   var lat =results.results[0].geometry.location.lat;
                   var long = results.results[0].geometry.location.lng;
                   var data = google.visualization.arrayToDataTable([
-                    ['Lat','Long','Name'],
-                    [lat,long,"Search Point"]
+                    ['Lat','Long','Description','Marker'],
+                    [lat,long,addrs,"search"]
                   ]);
                   request.get('/addSearch?lat='+lat+'&long='+long)
               .set('Accept','application/json')
@@ -50,11 +50,30 @@ var request = require('superagent');
                   for(i =0;i<res.body.length;i++){
                     var x = res.body[i];
                     console.log("hi");
-                data.addRows([[x.lat,x.long,x.shape]]);
+              var x_string = '<div id ="content">'+'<h1 id="firstHeading" class = "firstHeading">Median Income: '+ x.income +'</h1>'
+                             +'<div id="bodyContent">'+
+                             '<p><b> Shape: <b>'+ x.shape +'<p>' +
+                             '<p><b> Sighting Time: <b>'+ x.datetime +'<p>' +
+                             '<p><b> Location : <b>'+ x.city + ", " + x.state +'<p>' +
+                             '<p><b> Duration(seconds): <b>'+ x.duration +'<p>' +
+                              '</div>'
+                                + '</div>';
+        
+          
+                data.addRows([[x.lat,x.long,x_string,"ufo"]]);
                 }
+                var url = 'https://icons.iconarchive.com/icons/icons-land/vista-map-markers/48/';
                 map.draw(data, {
                     showTooltip: true,
-                    showInfoWindow: true
+                    showInfoWindow: true,
+                    icons: {
+                      ufo: {
+                        normal:   '/ufo.png'
+                      },
+                      search: {
+                        normal:   '/telescope.png'
+                      }
+                    }
                   });
                 }
                 
@@ -62,7 +81,15 @@ var request = require('superagent');
                 
                 map.draw(data, {
                     showTooltip: true,
-                    showInfoWindow: true
+                    showInfoWindow: true,
+                    icons: {
+                      ufo: {
+                        normal:   '/ufo.png'
+                      },
+                      search: {
+                        normal:   '/telescope.png'
+                      },
+                    }
                   });
                 });
                 };
