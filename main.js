@@ -9,7 +9,7 @@ var request = require('superagent');
       // See: https://developers.google.com/chart/interactive/docs/basic_load_libs#load-settings
       'mapsApiKey': 'AIzaSyDBU4eMBD02OnA8bu0iIn4HZFE__DEW3gE'
     });
-    google.charts.setOnLoadCallback(drawMapAdress);
+    //google.charts.setOnLoadCallback(drawMapAdress);
   
 
     //Handles adding and searching for points
@@ -39,31 +39,86 @@ var request = require('superagent');
                   var lat =results.results[0].geometry.location.lat;
                   var long = results.results[0].geometry.location.lng;
                   var data = google.visualization.arrayToDataTable([
-                    ['Lat','Long','Name'],
-                    [lat,long,"Search Point"]
+                    ['Lat','Long','Description','Marker'],
+                    [lat,long,addrs,"search"]
                   ]);
                   request.get('/addSearch?lat='+lat+'&long='+long)
               .set('Accept','application/json')
               .end((err,res)=>{
                 if(res){
                   console.log(res)
+                  var sap = 0;
+                  var total= 0;
+                  var tempLat = 0;
+                  var tempLong = 0;
                   for(i =0;i<res.body.length;i++){
                     var x = res.body[i];
-                    console.log("hi");
-                data.addRows([[x.lat,x.long,x.shape]]);
-                }
-                map.draw(data, {
+
+                    if(x.lat != tempLat ||x.long != tempLong){
+                      //Remove date rows from above
+                      if(sap > 1){
+                      data.removeRows(total-sap,sap);
+                      total = total-sap;
+                      }
+                      sap = 0;
+                      tempLat = x.lat;
+                      tempLong = x.long;
+                    }
+                    sap++;
+                    total++;
+              var x_string = '<div id ="content">'+'<h1 id="firstHeading" class = "firstHeading">Median Income: '+ x.income +'</h1>'
+                             +'<div id="bodyContent">'+
+                             '<p><b> Shape: <b>'+ x.shape +'<p>' +
+                             '<p><b> Sighting Time: <b>'+ x.datetime +'<p>' +
+                             '<p><b> Location : <b>'+ x.city + ", " + x.state +'<p>' +
+                             '<p><b> Duration(seconds): <b>'+ x.duration +'<p>' +
+                             '<p><b> Sightings at this Location: <b>'+ sap+'<p>' +
+                              '</div>'
+                                + '</div>';
+        
+          
+                data.addRows([[x.lat,x.long,x_string,"ufo"]]);
+                
+            
+              
+              }
+              //Get airport points
+              request.get('/airport?lat='+lat+'&long='+long)
+              .set('Accept','application/json')
+              .end((err,res)=>{
+                if(res){
+                  for(i = 0; i<res.body.length;i++){
+                    var a = res.body[i];
+
+                    data.addRows([[a.Latitude,a.Longitude*(-1),a.locationID,'airport']]);
+                   
+                  }
+                  map.draw(data, {
                     showTooltip: true,
-                    showInfoWindow: true
+                    showInfoWindow: true,
+                    icons: {
+                      ufo: {
+                        normal:   '/ufo.png'
+                      },
+                      search: {
+                        normal:   '/telescope.png'
+                      },
+                      airport:{
+                        normal:   '/airplane.png'
+                      }
+                    }
                   });
+                }
+
+              }
+            )
+               
+              
                 }
                 
                 console.log(data);
                 
-                map.draw(data, {
-                    showTooltip: true,
-                    showInfoWindow: true
-                  });
+            
                 });
                 };
               })
