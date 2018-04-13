@@ -47,15 +47,32 @@ var request = require('superagent');
               .end((err,res)=>{
                 if(res){
                   console.log(res)
+                  var sap = 0;
+                  var total= 0;
+                  var tempLat = 0;
+                  var tempLong = 0;
                   for(i =0;i<res.body.length;i++){
                     var x = res.body[i];
-                    console.log("hi");
+
+                    if(x.lat != tempLat ||x.long != tempLong){
+                      //Remove date rows from above
+                      if(sap > 1){
+                      data.removeRows(total-sap,sap);
+                      total = total-sap;
+                      }
+                      sap = 0;
+                      tempLat = x.lat;
+                      tempLong = x.long;
+                    }
+                    sap++;
+                    total++;
               var x_string = '<div id ="content">'+'<h1 id="firstHeading" class = "firstHeading">Median Income: '+ x.income +'</h1>'
                              +'<div id="bodyContent">'+
                              '<p><b> Shape: <b>'+ x.shape +'<p>' +
                              '<p><b> Sighting Time: <b>'+ x.datetime +'<p>' +
                              '<p><b> Location : <b>'+ x.city + ", " + x.state +'<p>' +
                              '<p><b> Duration(seconds): <b>'+ x.duration +'<p>' +
+                             '<p><b> Sightings at this Location: <b>'+ sap+'<p>' +
                               '</div>'
                                 + '</div>';
         

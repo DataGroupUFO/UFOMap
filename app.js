@@ -46,7 +46,7 @@ app.get('/addSearch',function(req,res){
   
   //Get all records in range from database
   var euc = 'SQRT(POW('+lat+'-lat,2) + POW('+long+'-`long`,2))'
-  connection.query('SELECT * FROM clean_test WHERE '+euc+' < 2 order by '+ euc ,(err,results,fields)=>{
+  connection.query('SELECT * FROM mapped_clean WHERE '+euc+' < .5 order by '+ euc ,(err,results,fields)=>{
     if(err)
       return res.status(400).send({error:'Database error',message:err});
     res.status(200).send(results);
@@ -66,7 +66,7 @@ app.get('/airport',function(req,res){
   
   //Get all records in range from database
   var euc = 'SQRT(POW('+lat+'-Latitude,2) + POW('+long+'-(`Longitude`*-1),2))'
-  connection.query('SELECT * FROM airports WHERE '+euc+' < 2 order by '+ euc ,(err,results,fields)=>{
+  connection.query('SELECT * FROM airports WHERE '+euc+' < .5 order by '+ euc ,(err,results,fields)=>{
     if(err)
       return res.status(400).send({error:'Database error',message:err});
     res.status(200).send(results);
